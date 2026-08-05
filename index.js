@@ -19,11 +19,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", async (req, res) => {
-    const books = await db.query("SELECT * FROM reading_history");
-    res.render("index.ejs",{
-        books: books.rows,
-        totalBooks : books.rows.length,
-    })
+    try {
+        const books = await db.query(
+            "SELECT * FROM reading_history"
+        );
+        const average = await db.query(
+            "SELECT AVG(rating) AS average_rating FROM reading_history"
+        );
+        res.render("index.ejs", {
+            books: books.rows,
+            totalBooks: books.rows.length,
+            averageRating: Number(average.rows[0].average_rating).toFixed(1),
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Unable to load books.");
+    }
 });
 
 app.get("/add", async(req,res)=>{
