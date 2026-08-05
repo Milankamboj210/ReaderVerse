@@ -30,8 +30,27 @@ app.get("/add", async(req,res)=>{
      res.render("add.ejs");
 });
 app.post("/add", async(req,res)=>{
-     console.log(req.body);
+    const {
+        isbn,
+        title,
+        author,
+        rating,
+        review,
+        date_read
+    } = req.body;
+    try{
+    const result = await db.query(
+        "INSERT INTO reading_history(isbn,title,author,rating,review,date_read) VALUES ($1,$2,$3,$4,$5,$6)",
+        [isbn, title, author, rating, review, date_read]
+      );
      res.redirect("/");
+    }catch (err) {
+
+        console.error(err);
+    
+        res.status(500).send("Unable to add book.");
+    
+    }
 });
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
