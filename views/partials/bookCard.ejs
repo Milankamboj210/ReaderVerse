@@ -1,0 +1,50 @@
+<article class="book-card"></article>
+
+    <div class="book-cover">
+        <p>Book Cover</p>
+    </div>
+
+    <section class="book-details">
+
+        <h3><%= book.title %></h3>
+
+        <p class="author"><%= book.author %></p>
+
+        <div class="rating">
+
+            <p>⭐ <%= book.rating %> / 5</p>
+
+            <p class="rating-label">
+                Rating Label
+            </p>
+
+        </div>
+
+        <p class="date-read">
+            <strong>Finished:</strong>
+            <%= book.date_read %>
+        </p>
+
+        <div class="thoughts">
+
+            <h4>My Thoughts</h4>
+
+            <p>
+                <%= book.review %>
+            </p>
+
+        </div>
+
+    </section>
+
+    <footer class="card-actions">
+
+        <button>Edit</button>
+
+        <button>Delete</button>
+
+        <button>Read More →</button>
+
+    </footer>
+
+</article>

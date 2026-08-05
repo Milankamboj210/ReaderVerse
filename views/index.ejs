@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReaderVerse</title>
+    <%- include("partials/head") %>
+</head>
+
+<body>
+
+    <header class="hero">
+
+        <h1>📚 ReaderVerse</h1>
+    
+        <p>Your Personal Reading Universe</p>
+    
+        <a href="/add" class="add-book-btn">
+            📖 Add to Library
+        </a>
+    
+    </header>
+
+    <main>
+
+        <section class="dashboard">
+            <%- include("partials/dashboard") %>
+        </section>
+
+        <section class="books-section">
+
+            <h2>My Reading History</h2>
+
+            <div class="book-grid">
+
+                <% books.forEach((book) => { %>
+
+                    <%- include("partials/bookCard", { book: book }) %>
+
+                <% }) %>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <%- include("partials/footer") %>
+    </footer>
+
+</body>
+</html>
