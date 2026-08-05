@@ -15,7 +15,29 @@
             <p>⭐ <%= book.rating %> / 5</p>
 
             <p class="rating-label">
-                Rating Label
+
+                <% if (book.rating >= 4.8) { %>
+            
+                    🏆 Masterpiece
+            
+                <% } else if (book.rating >= 4.5) { %>
+            
+                    ⭐ Excellent
+            
+                <% } else if (book.rating >= 4.0) { %>
+            
+                    👍 Great Read
+            
+                <% } else if (book.rating >= 3.5) { %>
+            
+                    📘 Good Read
+            
+                <% } else { %>
+            
+                    📖 Worth Reading
+            
+                <% } %>
+            
             </p>
 
         </div>
