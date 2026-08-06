@@ -1,93 +1,68 @@
-<article class="book-card"></article>
+<div class="book-card">
 
-<div class="book-cover">
+    <a href="/books/<%= book.id %>" class="book-cover">
 
-    <% if (book.isbn) { %>
+        <% if (book.isbn) { %>
 
-        <img
-            src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-L.jpg"
-            alt="<%= book.title %>"
-        >
+            <img
+                src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-L.jpg"
+                alt="<%= book.title %>"
+            >
 
-    <% } else { %>
+        <% } else { %>
 
-        <div class="cover-placeholder">
+            <div class="cover-placeholder">
 
-            📚
+                📚
+
+            </div>
+
+        <% } %>
+
+    </a>
+
+    <div class="book-content">
+
+        <h3 class="book-title"><%= book.title %></h3>
+
+        <p class="book-author"><%= book.author %></p>
+
+        <div class="rating-row">
+
+            <span class="rating">
+
+                ⭐ <%= book.rating %>
+
+            </span>
+
+            <span class="rating-badge">
+
+                <% if (book.rating == 5) { %>
+
+                    👑 Favorite
+
+                <% } else if (book.rating >= 4.8) { %>
+
+                    🏆 Masterpiece
+
+                <% } else if (book.rating >= 4.5) { %>
+
+                    ⭐ Excellent
+
+                <% } else if (book.rating >= 4.0) { %>
+
+                    👍 Great Read
+
+                <% } else { %>
+
+                    📘 Good Read
+
+                <% } %>
+
+            </span>
 
         </div>
 
-    <% } %>
+    </div>
 
 </div>
-
-    <section class="book-details">
-
-        <h3><%= book.title %></h3>
-
-        <p class="author"><%= book.author %></p>
-
-        <div class="rating">
-
-            <p>⭐ <%= book.rating %> / 5</p>
-
-            <p class="rating-label">
-
-                <% if (book.rating >= 4.8) { %>
-            
-                    🏆 Masterpiece
-            
-                <% } else if (book.rating >= 4.5) { %>
-            
-                    ⭐ Excellent
-            
-                <% } else if (book.rating >= 4.0) { %>
-            
-                    👍 Great Read
-            
-                <% } else if (book.rating >= 3.5) { %>
-            
-                    📘 Good Read
-            
-                <% } else { %>
-            
-                    📖 Worth Reading
-            
-                <% } %>
-            
-            </p>
-
-        </div>
-
-        <p class="date-read">
-            <strong>Finished:</strong>
-            <%= new Date(book.date_read).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }) %>
-        </p>
-
-        <div class="thoughts">
-
-            <h4>My Thoughts</h4>
-
-            <p>
-                <%= book.review %>
-            </p>
-
-        </div>
-
-    </section>
-
-    <footer class="card-actions">
-
-        <button>Edit</button>
-
-        <button>Delete</button>
-
-        <button>Read More →</button>
-
-    </footer>
-
-</article>
