@@ -4,7 +4,7 @@ import axios from "axios";
 dotenv.config();
 import pg from "pg";
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 const db = new pg.Client({
     user: process.env.DB_USER,
@@ -12,6 +12,9 @@ const db = new pg.Client({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false,
+      },
   });
 await db.connect();
 app.use(express.urlencoded({ extended: true }));
