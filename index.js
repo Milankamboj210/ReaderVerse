@@ -41,6 +41,7 @@ app.get("/add", async(req,res)=>{
      res.render("add.ejs");
 });
 app.get("/books/:id",async(req,res)=>{
+    try{
     const id = req.params.id;
     const result = await db.query(
         "SELECT * FROM reading_history WHERE id = $1",
@@ -49,29 +50,22 @@ app.get("/books/:id",async(req,res)=>{
     res.render("book.ejs", {
         book: result.rows[0]
     });
-});
-const id = req.params.id;
-
-try {
-    const result = await db.query(
-        "SELECT * FROM reading_history WHERE id = $1",
-        [id]
-    );
-
-    res.render("edit.ejs", {
-        book: result.rows[0]
-    });
-
-} catch (err) {
+}catch (err) {
     console.error(err);
     res.status(500).send("Unable to load book.");
 }
+});
 app.get("/edit/:id",async(req,res)=>{
+    try{
     const id = req.params.id;
     const rest = await db.query("SELECT * FROM reading_history WHERE id = $1",[id]);
     res.render("edit.ejs",{
         book: rest.rows[0],
     })
+}catch (err) {
+    console.error(err);
+    res.status(500).send("Unable to edit book.");
+}
 });
 app.post("/add", async(req,res)=>{
     const {
@@ -97,15 +91,21 @@ app.post("/add", async(req,res)=>{
     }
 });
 app.post("/edit/:id",async(req,res)=>{
-    const id = req.params.id;
-     const isbn = req.body.isbn;
-     const title = req.body.title;
-     const author = req.body.author;
-     const rating = req.body.rating;
-     const review = req.body.review;
-     const date = req.body.date_read;
+    try{
+        const {
+            isbn,
+            title,
+            author,
+            rating,
+            review,
+            date_read
+        } = req.body;
      await db.query("UPDATE reading_history SET title = $1,isbn = $2,author = $3,rating = $4,review = $5,date_read = $6 WHERE id = $7",[title,isbn,author,rating,review,date,id]);
     res.redirect(`/books/${id}`);
+    }catch (err) {
+        console.error(err);
+        res.status(500).send("Unable to update book.");
+    }
 });
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
