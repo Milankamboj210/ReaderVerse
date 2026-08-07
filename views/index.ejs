@@ -70,16 +70,43 @@
         <section class="books-section">
 
             <h2>My Reading History</h2>
+            <% if (books.length === 0 && search) { %>
 
-            <div class="book-grid">
-
-                <% books.forEach((book) => { %>
-
-                    <%- include("partials/bookCard", { book: book }) %>
-
-                <% }) %>
-
-            </div>
+                <div class="empty-library">
+                
+                    <h2>🔍 No books found.</h2>
+                
+                    <p>Try searching with another title or author.</p>
+                
+                </div>
+                
+                <% } else if (books.length === 0) { %>
+                
+                <div class="empty-library">
+                
+                    <h2>📚 Your library is empty.</h2>
+                
+                    <p>Add your first book to begin.</p>
+                
+                    <a href="/add" class="hero-btn">
+                        + Add First Book
+                    </a>
+                
+                </div>
+                
+                <% } else { %>
+                
+                <div class="book-grid">
+                
+                    <% books.forEach((book)=>{ %>
+                
+                        <%- include("partials/bookCard",{book}) %>
+                
+                    <% }) %>
+                
+                </div>
+                
+                <% } %>
 
         </section>
 

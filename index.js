@@ -14,10 +14,8 @@ const db = new pg.Client({
     port: process.env.DB_PORT,
   });
 await db.connect();
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
 app.get("/", async (req, res) => {
     try {
         const search = req.query.search || "";
@@ -62,6 +60,9 @@ app.get("/", async (req, res) => {
         res.status(500).send("Unable to load books.");
     }
 });
+app.get("/about",(req,res)=>{
+    res.render("about.ejs");
+});
 app.get("/add", async(req,res)=>{
      res.render("add.ejs");
 });
@@ -72,6 +73,9 @@ app.get("/books/:id",async(req,res)=>{
         "SELECT * FROM reading_history WHERE id = $1",
         [id]
     );
+    if(result.rows.length===0){
+        return res.status(404).send("Book not found.");
+    }
     res.render("book.ejs", {
         book: result.rows[0]
     });
@@ -84,6 +88,10 @@ app.get("/edit/:id",async(req,res)=>{
     try{
     const id = req.params.id;
     const rest = await db.query("SELECT * FROM reading_history WHERE id = $1",[id]);
+    if(rest.rows.length===0){
+        return res.status(404).send("Book not found.");
+
+    }
     res.render("edit.ejs",{
         book: rest.rows[0],
     })
@@ -116,33 +124,21 @@ app.post("/add", async(req,res)=>{
     }
 });
 app.post("/delete/:id", async (req, res) => {
-
     try {
-
         const id = req.params.id;
-
         await db.query(
             "DELETE FROM reading_history WHERE id = $1",
             [id]
         );
-
         res.redirect("/");
-
     } catch (err) {
-
         console.error(err);
-
         res.status(500).send("Unable to delete book.");
-
     }
-
 });
 app.post("/edit/:id", async (req, res) => {
-
     try {
-
         const id = req.params.id;
-
         const {
             isbn,
             title,
@@ -151,19 +147,15 @@ app.post("/edit/:id", async (req, res) => {
             review,
             date_read
         } = req.body;
-
         await db.query(
             "UPDATE reading_history SET title = $1, isbn = $2, author = $3, rating = $4, review = $5, date_read = $6 WHERE id = $7",
             [title, isbn, author, rating, review, date_read, id]
         );
-
         res.redirect(`/books/${id}`);
-
     } catch (err) {
         console.error(err);
         res.status(500).send("Unable to update book.");
     }
-
 });
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
