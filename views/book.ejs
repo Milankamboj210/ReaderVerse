@@ -112,26 +112,19 @@
 
             <div class="book-actions">
 
-                <a href="/" class="secondary-btn">
-
-                    ← Back to Library
-
+                <a href="/edit/<%= book.id %>" class="edit-btn">
+                    ✏️ Edit
                 </a>
-
-                <div>
-
-                    <a href="#" class="edit-btn">
-
-                        ✏ Edit
-
-                    </a>
-
-                    <a href="#" class="delete-btn">
+            
+                <form action="/delete/<%= book.id %>" method="POST"
+                      onsubmit="return confirm('Delete this book?')">
+            
+                    <button class="delete-btn">
                         🗑 Delete
-                    </a>
-
-                </div>
-
+                    </button>
+            
+                </form>
+            
             </div>
 
         </div>

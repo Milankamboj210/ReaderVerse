@@ -34,35 +34,38 @@
         <section class="dashboard">
             <%- include("partials/dashboard") %>
         </section>
-        <section class="library-toolbar">
+        <form action="/" method="GET" class="library-toolbar">
 
             <input
                 type="text"
-                placeholder="🔍 Search your library..."
+                name="search"
+                placeholder="🔍 Search by title or author..."
+                value="<%= search || '' %>"
             >
         
-            <select>
+            <button type="submit" class="search-btn">
+                Search
+            </button>
         
-                <option>
         
-                    Sort by Latest
+            <select
+            name="sort"
+            class="sort-dropdown"
+            onchange="this.form.submit()"
+        >
+            <option value="latest" <%= sort === "latest" ? "selected" : "" %>>
+                📅 Sort by Latest
+            </option>
         
-                </option>
+            <option value="rating" <%= sort === "rating" ? "selected" : "" %>>
+                ⭐ Highest Rated
+            </option>
         
-                <option>
-        
-                    Highest Rated
-        
-                </option>
-        
-                <option>
-        
-                    Title (A-Z)
-        
-                </option>
-        
-            </select>
-        
+            <option value="title" <%= sort === "title" ? "selected" : "" %>>
+                🔤 Title (A-Z)
+            </option>
+        </select>
+    </form>
         </section>
         <section class="books-section">
 

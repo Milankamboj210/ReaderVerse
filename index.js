@@ -20,9 +20,33 @@ app.use(express.static("public"));
 
 app.get("/", async (req, res) => {
     try {
-        const books = await db.query(
-            "SELECT * FROM reading_history"
-        );
+        const search = req.query.search || "";
+        const sort = req.query.sort || "latest";
+        let orderBy = "";
+        if (sort === "latest") {
+            orderBy = "ORDER BY date_read DESC";
+        } else if (sort === "rating") {
+            orderBy = "ORDER BY rating DESC";
+        } else if (sort === "title") {
+            orderBy = "ORDER BY title ASC";
+        }
+        let books;
+        if (search) {
+            books = await db.query(
+                `SELECT *
+                 FROM reading_history
+                 WHERE title ILIKE $1
+                    OR author ILIKE $1
+                 ${orderBy}`,
+                [`%${search}%`]
+            );
+        } else {
+            books = await db.query(
+                `SELECT *
+                 FROM reading_history
+                 ${orderBy}`
+            );
+        }
         const average = await db.query(
             "SELECT AVG(rating) AS average_rating FROM reading_history"
         );
@@ -30,13 +54,14 @@ app.get("/", async (req, res) => {
             books: books.rows,
             totalBooks: books.rows.length,
             averageRating: Number(average.rows[0].average_rating).toFixed(1),
+            search,
+            sort
         });
     } catch (err) {
         console.error(err);
         res.status(500).send("Unable to load books.");
     }
 });
-
 app.get("/add", async(req,res)=>{
      res.render("add.ejs");
 });
@@ -90,8 +115,34 @@ app.post("/add", async(req,res)=>{
     
     }
 });
-app.post("/edit/:id",async(req,res)=>{
-    try{
+app.post("/delete/:id", async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
+        await db.query(
+            "DELETE FROM reading_history WHERE id = $1",
+            [id]
+        );
+
+        res.redirect("/");
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).send("Unable to delete book.");
+
+    }
+
+});
+app.post("/edit/:id", async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
         const {
             isbn,
             title,
@@ -100,12 +151,19 @@ app.post("/edit/:id",async(req,res)=>{
             review,
             date_read
         } = req.body;
-     await db.query("UPDATE reading_history SET title = $1,isbn = $2,author = $3,rating = $4,review = $5,date_read = $6 WHERE id = $7",[title,isbn,author,rating,review,date,id]);
-    res.redirect(`/books/${id}`);
-    }catch (err) {
+
+        await db.query(
+            "UPDATE reading_history SET title = $1, isbn = $2, author = $3, rating = $4, review = $5, date_read = $6 WHERE id = $7",
+            [title, isbn, author, rating, review, date_read, id]
+        );
+
+        res.redirect(`/books/${id}`);
+
+    } catch (err) {
         console.error(err);
         res.status(500).send("Unable to update book.");
     }
+
 });
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
