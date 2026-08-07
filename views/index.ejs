@@ -9,14 +9,22 @@
 
 <body>
 
-    <header class="hero">
+    <%- include("partials/navbar") %>
 
-        <h1>📚 ReaderVerse</h1>
+    <header class="hero">
     
-        <p>Your Personal Reading Universe</p>
+        <h1>Your Reading Journey.</h1>
     
-        <a href="/add" class="add-book-btn">
-            📖 Add to Library
+        <p>
+    
+            Organize, review and rediscover every book you've read.
+    
+        </p>
+    
+        <a href="/add" class="hero-btn">
+    
+            + Add New Book
+    
         </a>
     
     </header>
@@ -26,7 +34,36 @@
         <section class="dashboard">
             <%- include("partials/dashboard") %>
         </section>
+        <section class="library-toolbar">
 
+            <input
+                type="text"
+                placeholder="🔍 Search your library..."
+            >
+        
+            <select>
+        
+                <option>
+        
+                    Sort by Latest
+        
+                </option>
+        
+                <option>
+        
+                    Highest Rated
+        
+                </option>
+        
+                <option>
+        
+                    Title (A-Z)
+        
+                </option>
+        
+            </select>
+        
+        </section>
         <section class="books-section">
 
             <h2>My Reading History</h2>

@@ -40,6 +40,47 @@ app.get("/", async (req, res) => {
 app.get("/add", async(req,res)=>{
      res.render("add.ejs");
 });
+app.get("/books/:id",async(req,res)=>{
+    const id = req.params.id;
+    const result = await db.query(
+        "SELECT * FROM reading_history WHERE id = $1",
+        [id]
+    );
+    res.render("book.ejs", {
+        book: result.rows[0]
+    });
+});
+const id = req.params.id;
+
+try {
+    const result = await db.query(
+        "SELECT * FROM reading_history WHERE id = $1",
+        [id]
+    );
+
+    res.render("edit.ejs", {
+        book: result.rows[0]
+    });
+
+} catch (err) {
+    console.error(err);
+    res.status(500).send("Unable to load book.");
+}
+app.get("/edit/:id",async(req,res)=>{
+    const res = await db.query("SELECT * FROM reading_history");
+    const isbn = req.body.book.isbn;
+    const title = req.body.book.title;
+    const author = req.body.book.author;
+    const rating = req.body.book.rating;
+    const review = req.body.book.review;
+    res.render("edit.ejs",{
+        isbn,
+        title,
+        author,
+        rating,
+        review,
+    })
+});
 app.post("/add", async(req,res)=>{
     const {
         isbn,
