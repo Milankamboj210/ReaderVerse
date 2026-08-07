@@ -67,18 +67,10 @@ try {
     res.status(500).send("Unable to load book.");
 }
 app.get("/edit/:id",async(req,res)=>{
-    const res = await db.query("SELECT * FROM reading_history");
-    const isbn = req.body.book.isbn;
-    const title = req.body.book.title;
-    const author = req.body.book.author;
-    const rating = req.body.book.rating;
-    const review = req.body.book.review;
+    const id = req.params.id;
+    const rest = await db.query("SELECT * FROM reading_history WHERE id = $1",[id]);
     res.render("edit.ejs",{
-        isbn,
-        title,
-        author,
-        rating,
-        review,
+        book: rest.rows[0],
     })
 });
 app.post("/add", async(req,res)=>{
@@ -103,6 +95,17 @@ app.post("/add", async(req,res)=>{
         res.status(500).send("Unable to add book.");
     
     }
+});
+app.post("/edit/:id",async(req,res)=>{
+    const id = req.params.id;
+     const isbn = req.body.isbn;
+     const title = req.body.title;
+     const author = req.body.author;
+     const rating = req.body.rating;
+     const review = req.body.review;
+     const date = req.body.date_read;
+     await db.query("UPDATE reading_history SET title = $1,isbn = $2,author = $3,rating = $4,review = $5,date_read = $6 WHERE id = $7",[title,isbn,author,rating,review,date,id]);
+    res.redirect(`/books/${id}`);
 });
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
